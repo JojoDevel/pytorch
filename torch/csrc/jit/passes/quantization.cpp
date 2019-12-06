@@ -827,6 +827,21 @@ void InsertQuantDeQuantHelper::run(
   script::Method method = module.get_method(method_name);
   auto graph = method.graph();
 
+  // We only need to register new parameters if the graph has
+  // been quantized before
+  if (values_to_qparams_.count(graph.get())) {
+    for (auto& pr : values_to_qparams_.at(graph.get())) {
+      Value* v = pr.first;
+      const std::unordered_map<std::string, IValue>& qparams = pr.second;
+      for (const auto& pr : qparams) {
+        const auto& name = pr.first;
+        const auto& qparam = pr.second;
+        module._ivalue()->setAttr(v->debugName() + name, qparam);
+      }
+    }
+    return;
+  }
+
   // prim::Param nodes do not belong to the graph. Hence the Insert
   // point is the beginning of graph node. This also safe guards against
   // observing a potentially mutated value due to some in-place operation
