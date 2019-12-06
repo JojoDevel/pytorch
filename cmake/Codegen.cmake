@@ -8,6 +8,8 @@
 # Helper functions
 ################################################################################
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
+
 function(filter_list output input)
     unset(result)
     foreach(filename ${${input}})

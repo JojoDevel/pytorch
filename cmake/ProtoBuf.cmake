@@ -146,6 +146,8 @@ else()
   set(CAFFE2_PROTOC_EXECUTABLE protobuf::protoc)
 endif()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
+
 ################################################################################################
 # Modification of standard 'protobuf_generate_cpp()' with output dir parameter and python support
 # Usage:
