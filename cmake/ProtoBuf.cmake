@@ -52,6 +52,8 @@ macro(custom_protobuf_find)
     endif(MSVC_Z7_OVERRIDE)
   endif(MSVC)
 
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
+
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../third_party/protobuf/cmake)
 
   set(CMAKE_POSITION_INDEPENDENT_CODE ${__caffe2_CMAKE_POSITION_INDEPENDENT_CODE})
@@ -145,8 +147,6 @@ if(EXISTS "${CAFFE2_CUSTOM_PROTOC_EXECUTABLE}")
 else()
   set(CAFFE2_PROTOC_EXECUTABLE protobuf::protoc)
 endif()
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -latomic")
 
 ################################################################################################
 # Modification of standard 'protobuf_generate_cpp()' with output dir parameter and python support
