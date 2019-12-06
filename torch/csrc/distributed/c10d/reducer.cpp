@@ -171,10 +171,8 @@ Reducer::Reducer(
     for (size_t i = 0; i < replica_count; i++) {
       at::TensorOptions options, options_host;
       options = options.dtype(at::kInt);
-      options_host =
-          replicas_[i][0].is_cuda() ? options.pinned_memory(true) : options;
       local_used_maps_[i] =
-          at::zeros({static_cast<long>(variable_count)}, options_host);
+          at::zeros({static_cast<long>(variable_count)}, options);
       // This tensor needs to be on the same device as replica because backend
       // such as NCCL may not support CPU tensors, and hence it might not work
       // if we always put it on CPU.
@@ -363,7 +361,7 @@ void Reducer::mark_variable_ready(VariableIndex index) {
     for (size_t i = 0; i < local_used_maps_.size(); i++) {
       // We do async H2D to avoid the blocking overhead. The async copy and
       // allreduce respect the current stream, so will be sequenced correctly.
-      local_used_maps_dev_[i].copy_(local_used_maps_[i], true);
+      local_used_maps_dev_[i].copy_(local_used_maps_[i], false);
     }
     local_used_work_ = process_group_->allreduce(local_used_maps_dev_);
 
